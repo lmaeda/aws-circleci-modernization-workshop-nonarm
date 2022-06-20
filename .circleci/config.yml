@@ -72,8 +72,6 @@ jobs:
           os: "linux"
       - terraform/init:
           path: ./terraform/ecs
-      - terraform/plan:
-          path: ./terraform/ecs
       - run:
           name: Terraform apply
           command: |
@@ -116,8 +114,6 @@ jobs:
           arch: "amd64"
           os: "linux"
       - terraform/init:
-          path: ./terraform/ecs
-      - terraform/plan:
           path: ./terraform/ecs
       - terraform/destroy:
           path: ./terraform/ecs

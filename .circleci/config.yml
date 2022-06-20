@@ -158,4 +158,3 @@ workflows:
             - snyk_demo
           requires:
             - approve_destroy
-

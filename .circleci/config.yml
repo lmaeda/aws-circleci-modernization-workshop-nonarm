@@ -44,7 +44,7 @@ jobs:
   build_docker_image:
     machine:
       image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+    resource_class: medium
     steps:
       - checkout  
       - docker/check
@@ -60,7 +60,7 @@ jobs:
   deploy_aws_ecs:
     machine:
       image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+    resource_class: medium
     steps:
       - checkout
       - run:
@@ -92,7 +92,7 @@ jobs:
   smoketest_deployment:
     machine:
       image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+    resource_class: medium
     steps:
       - checkout
       - attach_workspace:
@@ -105,7 +105,7 @@ jobs:
   destroy_aws_ecs:
     machine:
       image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+    resource_class: medium
     steps:
       - checkout
       - run:

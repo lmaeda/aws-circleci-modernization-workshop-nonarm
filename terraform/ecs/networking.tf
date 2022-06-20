@@ -3,7 +3,7 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name  = "DevRel ARM VPC",
+    Name  = "DevRel AMD VPC",
     owner = "Angel Rivera",
     team  = "DevRel Marketing"
   }
@@ -61,10 +61,10 @@ resource "aws_route_table_association" "route_table_association_subB" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_security_group" "app-arm-22" {
+resource "aws_security_group" "app-amd-22" {
   description = "Port 22 Admin"
   vpc_id      = aws_vpc.vpc.id
-  name_prefix = "app-arm-22-SSH-"
+  name_prefix = "app-amd-22-SSH-"
 
   ingress {
     protocol    = "tcp"
@@ -81,15 +81,15 @@ resource "aws_security_group" "app-arm-22" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name  = "app-arm-22-SSH",
+    Name  = "app-amd-22-SSH",
     team  = "DevRel Marketing",
     owner = "Angel Rivera"
   }
 }
 
-resource "aws_security_group" "app-arm-ELB" {
+resource "aws_security_group" "app-amd-ELB" {
   description = "Port 443 Elastic Load Balancer"
-  name_prefix = "app-arm-443-ELB-"
+  name_prefix = "app-amd-443-ELB-"
   vpc_id      = aws_vpc.vpc.id
 
   ingress {
@@ -109,15 +109,15 @@ resource "aws_security_group" "app-arm-ELB" {
     ]
   }
   tags = {
-    Name  = "app-arm-443-ELB",
+    Name  = "app-amd-443-ELB",
     team  = "DevRel Marketing",
     owner = "Angel Rivera"
   }
 }
 
-resource "aws_security_group" "app-arm-ELB-HTTP80" {
+resource "aws_security_group" "app-amd-ELB-HTTP80" {
   description = "Port 80 Elastic Load Balancer"
-  name_prefix = "app-arm-ELB-80-"
+  name_prefix = "app-amd-ELB-80-"
   vpc_id      = aws_vpc.vpc.id
 
   ingress {
@@ -137,21 +137,21 @@ resource "aws_security_group" "app-arm-ELB-HTTP80" {
     ]
   }
   tags = {
-    Name = "app-arm-ELB-80"
+    Name = "app-amd-ELB-80"
   }
 }
 
-resource "aws_security_group" "app-arm-80" {
+resource "aws_security_group" "app-amd-80" {
   description = "Port 80 internal dev group "
   vpc_id      = aws_vpc.vpc.id
-  name_prefix = "app-arm-80-internal-"
+  name_prefix = "app-amd-80-internal-"
 
   ingress {
     protocol  = "tcp"
     from_port = 80
     to_port   = 80
     security_groups = [
-      aws_security_group.app-arm-ELB-HTTP80.id,
+      aws_security_group.app-amd-ELB-HTTP80.id,
     ]
   }
 
@@ -165,6 +165,6 @@ resource "aws_security_group" "app-arm-80" {
     ]
   }
   tags = {
-    Name = "app-arm-80-internal"
+    Name = "app-amd-80-internal"
   }
 }

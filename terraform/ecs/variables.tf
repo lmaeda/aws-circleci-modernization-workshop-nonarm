@@ -20,7 +20,7 @@ variable "ami" {
 }
 
 variable "instance_type" {
-  description = "AWS ARM GravitonInstance Type"
+  description = "AWS AMD GravitonInstance Type"
   default     = "t4g.medium"
 }
 

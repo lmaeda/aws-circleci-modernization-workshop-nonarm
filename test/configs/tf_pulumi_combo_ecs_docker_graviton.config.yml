@@ -1,11 +1,11 @@
 version: 2.1
 orbs:
-  snyk: snyk/snyk@0.1.0
-  aws-cli: circleci/aws-cli@2.0.2
-  node: circleci/node@4.2.0
-  docker: circleci/docker@1.5.0
-  terraform: circleci/terraform@3.0.0
-  pulumi: pulumi/pulumi@2.0.0
+  snyk: snyk/snyk@1.1.2
+  aws-cli: circleci/aws-cli@3.1.1
+  node: circleci/node@5.0.2
+  docker: circleci/docker@2.1.0
+  terraform: circleci/terraform@3.1.0
+  pulumi: pulumi/pulumi@2.1.0
 jobs:
   run_tests:
     docker:
@@ -35,10 +35,10 @@ jobs:
       - snyk/scan:
           fail-on-issues: false
           monitor-on-build: false
-  build_arm_docker_image:
+  build_amd_docker_image:
     machine:
       image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+    resource_class: medium
     steps:
       - checkout  
       - docker/check
@@ -51,7 +51,7 @@ jobs:
   terraform_deploy_aws_ecs:
     machine:
       image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+    resource_class: medium
     steps:
       - checkout
       - run:
@@ -59,7 +59,7 @@ jobs:
           command: echo "credentials \"app.terraform.io\" {token = \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
       - terraform/install:
           terraform_version: "1.0.2"
-          arch: "arm64"
+          arch: "amd64"
           os: "linux"
       - terraform/init:
           path: ./terraform/ecs
@@ -103,7 +103,7 @@ jobs:
             pulumi config set ecs:asg_min 3
             pulumi config set ecs:asg_max 5
             pulumi config set ecs:asg_desired 3
-            pulumi config set ecs:cluster_name "app-arm"
+            pulumi config set ecs:cluster_name "app-amd"
             pulumi config set ecs:ecs_desired_count 3
             pulumi config set ecs:docker_image_name ${DOCKER_LOGIN}/${CIRCLE_PROJECT_REPONAME}
             pulumi config set ecs:docker_image_tag 0.1.<< pipeline.number >>
@@ -123,7 +123,7 @@ jobs:
   smoketest_deployment:
     machine:
       image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+    resource_class: medium
     steps:
       - checkout
       - attach_workspace:
@@ -136,7 +136,7 @@ jobs:
   terraform_destroy_aws_ecs:
     machine:
       image: ubuntu-2004:202101-01
-    resource_class: arm.medium
+    resource_class: medium
     steps:
       - checkout
       - run:
@@ -144,7 +144,7 @@ jobs:
           command: echo "credentials \"app.terraform.io\" {token = \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
       - terraform/install:
           terraform_version: "1.0.2"
-          arch: "arm64"
+          arch: "amd64"
           os: "linux"
       - terraform/init:
           path: ./terraform/ecs
@@ -168,19 +168,37 @@ jobs:
 workflows:
   build:
     jobs:
-      - run_tests
-      - scan_app
-      - build_arm_docker_image
-      - pulumi_deploy_aws_ecs:
+      - run_tests:
+          context:
+            - snyk_demo
+      - scan_app:
+          context:
+            - snyk_demo
           requires:
-            - build_arm_docker_image          
+            - run_tests
+      - build_amd_docker_image:
+          context:
+            - snyk_demo
+          requires:
+            - scan_app
+      - pulumi_deploy_aws_ecs:
+          context:
+            - snyk_demo
+          requires:
+            - build_amd_docker_image          
       - smoketest_deployment:
+          context:
+            - snyk_demo
           requires:
             - pulumi_deploy_aws_ecs
       - approve_destroy:
+          context:
+            - snyk_demo
           type: approval
           requires:
             - smoketest_deployment
       - pulumi_destroy_aws_ecs:
+          context:
+            - snyk_demo
           requires:
             - approve_destroy

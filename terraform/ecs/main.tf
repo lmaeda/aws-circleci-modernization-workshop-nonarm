@@ -97,7 +97,7 @@ resource "aws_autoscaling_group" "app" {
   target_group_arns    = [aws_alb_target_group.alb.arn]
   tag {
     key                 = "Name"
-    value               = "app-arm"
+    value               = "app-amd"
     propagate_at_launch = true
   }
 }

@@ -1,9 +1,9 @@
 version: 2.1
 orbs:
-  snyk: snyk/snyk@0.1.0
-  aws-cli: circleci/aws-cli@2.0.2
-  node: circleci/node@4.2.0
-  terraform: circleci/terraform@2.0.0  
+  snyk: snyk/snyk@1.1.2
+  aws-cli: circleci/aws-cli@3.1.1
+  node: circleci/node@5.0.2
+  terraform: circleci/terraform@3.1.0  
 jobs:
   run-tests:
     machine:
@@ -55,7 +55,7 @@ jobs:
           name: Create .terraformrc file locally
           command: echo "credentials \"app.terraform.io\" {token = \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc
       - terraform/install:
-          terraform_version: "0.14.10"
+          terraform_version: "1.2.3"
           arch: "amd64"
           os: "linux"
       - run:
@@ -116,7 +116,7 @@ jobs:
       - attach_workspace:
           at: /tmp/ecr/
       - terraform/install:
-          terraform_version: "0.14.10"
+          terraform_version: "1.2.3"
           arch: "amd64"
           os: "linux"
       - run:
@@ -161,7 +161,7 @@ jobs:
           name: Create .terraformrc file locally
           command: echo "credentials \"app.terraform.io\" {token = \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc && cat $HOME/.terraformrc
       - terraform/install:
-          terraform_version: "0.14.10"
+          terraform_version: "1.2.3"
           arch: "amd64"
           os: "linux"
       - run:
@@ -185,7 +185,7 @@ jobs:
           name: Create .terraformrc file locally
           command: echo "credentials \"app.terraform.io\" {token = \"$TERRAFORM_TOKEN\"}" > $HOME/.terraformrc && cat $HOME/.terraformrc
       - terraform/install:
-          terraform_version: "0.14.10"
+          terraform_version: "1.2.3"
           arch: "amd64"
       - terraform/init:
           path: ./terraform/app-runner/
@@ -194,25 +194,43 @@ jobs:
 workflows:
   scan_deploy:
     jobs:
-      - run_tests
-      - scan_app
-      - create_ecr_repo
+      - run_tests:
+          context:
+            - snyk_demo
+      - scan_app:
+          context:
+            - snyk_demo
+      - create_ecr_repo:
+          context:
+            - snyk_demo
       - build_push_docker_image:
+          context:
+            - snyk_demo
           requires:
             - create_ecr_repo
       - create_deploy_app_runner:
+          context:
+            - snyk_demo
           requires:
             - build_push_docker_image
       - smoketest_deployment:
+          context:
+            - snyk_demo
           requires:
             - create_deploy_app_runner
       - approve_destroy:
+          context:
+            - snyk_demo
           type: approval
           requires:
             - smoketest_deployment            
       - destroy_ecr:
+          context:
+            - snyk_demo
           requires:
             - approve_destroy
       - destroy_app_runner:
+          context:
+            - snyk_demo
           requires:
             - approve_destroy

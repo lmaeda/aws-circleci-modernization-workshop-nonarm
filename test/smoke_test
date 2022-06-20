@@ -19,6 +19,10 @@ do
   else
     echo "Checking Status on host $SMOKE... $TIME_OUT_COUNT seconds elapsed"
     TIME_OUT_COUNT=$((TIME_OUT_COUNT+5))
+    if [ $TIME_OUT_COUNT -gt 300 ]; then
+      echo 'Terminating Smoke Tests after 300 seconds.'
+      break
+    fi
   fi
   sleep 5
 done

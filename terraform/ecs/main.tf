@@ -188,8 +188,8 @@ resource "aws_autoscaling_notification" "asg_notifications" {
 }
 
 # AWS Cloudwatch Log Groups
-resource "aws_cloudwatch_log_group" "awslogs-app-arm" {
-  name = "awslogs-app-arm"
+resource "aws_cloudwatch_log_group" "awslogs-app-amd" {
+  name = "awslogs-app-amd"
   tags = {
     team  = "devrel marketing"
     owner = "Angel Rivera"
@@ -242,7 +242,7 @@ resource "aws_alb_listener" "front_end" {
 
 #AWS ECS Task definition
 resource "aws_ecs_task_definition" "app-amd" {
-  family                = "app-arm"
+  family                = "app-amd"
   container_definitions = data.template_file.task_definition_json.rendered
 }
 
@@ -261,7 +261,7 @@ resource "aws_ecs_service" "app-amd" {
   task_definition                    = aws_ecs_task_definition.app-amd.arn
   load_balancer {
     target_group_arn = aws_alb_target_group.alb.id
-    container_name   = "app-arm"
+    container_name   = "app-amd"
     container_port   = 5000
   }
   depends_on = [

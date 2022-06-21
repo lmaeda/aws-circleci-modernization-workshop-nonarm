@@ -2,10 +2,10 @@ variable "availability_zones" {
   type        = list(string)
   description = "AWS Availability Zones"
   default = [
-    "ap-northeast-1a",
-    "ap-northeast-1b",
-    "ap-northeast-1c",
-    "ap-northeast-1e",
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1e",
   ]
 }
 
@@ -31,7 +31,7 @@ variable "iam_profile" {
 
 variable "asg_min" {
   description = "Min Instances"
-  default     = 3
+  default     = 2
 }
 
 variable "asg_max" {

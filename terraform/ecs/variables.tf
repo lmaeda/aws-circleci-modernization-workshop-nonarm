@@ -47,7 +47,7 @@ variable "asg_desired" {
 variable "docker_img_name" {
   type        = string
   description = "Name of the docker image being deployed"
-  default     = "ariv3ra/aws-circleci-modernization-workshop-code"
+  default     = "ariv3ra/aws-circleci-modernization-workshop-nonarm"
 }
 
 variable "docker_img_tag" {

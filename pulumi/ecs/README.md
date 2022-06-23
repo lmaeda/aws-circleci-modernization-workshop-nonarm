@@ -9,5 +9,5 @@ pulumi config set ecs:asg_min 2
 pulumi config set ecs:asg_max 5
 pulumi config set ecs:asg_desired 2
 pulumi config set ecs:ecs_desired_count 2
-pulumi config set docker:image_name "ariv3ra/aws-circleci-modernization-workshop-nonarm"
+pulumi config set docker:image_name "ariv3ra/snyk-pulumi-pipelines" 
 pulumi config set docker:image_tag "latest"
